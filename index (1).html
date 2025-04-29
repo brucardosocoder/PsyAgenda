@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsyAgenda - Agenda para Psicólogos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #93c5fd;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #60a5fa;
+        }
+        .note-textarea {
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- App Container -->
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg overflow-hidden">
+        <!-- Header -->
+        <header class="bg-yellow-300 p-4 shadow-md">
+            <h1 class="text-2xl font-bold text-center text-black">PsyAgenda</h1>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-4">
+            <!-- Screen 1: Login (default visible) -->
+            <div id="login-screen" class="space-y-6">
+                <div class="text-center mb-8">
+                    <i class="fas fa-brain text-5xl text-blue-400 mb-4"></i>
+                    <h2 class="text-xl font-semibold text-gray-800">Acesse sua conta</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <input type="text" placeholder="E-mail" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    <div>
+                        <input type="password" placeholder="Senha" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <button onclick="showScreen('agenda-screen')" class="w-full bg-yellow-300 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition duration-200">
+                        Entrar
+                    </button>
+                    
+                    <div class="text-center">
+                        <button onclick="showScreen('register-screen')" class="text-blue-500 text-sm font-medium">
+                            Não tem uma conta? Cadastre-se
+                        </button>
+                    </div>
+                    
+                    <div class="text-center mt-6">
+                        <p class="text-gray-600 mb-2">Ou acesse com</p>
+                        <button class="flex items-center justify-center w-full space-x-2 bg-white border border-gray-300 rounded-lg py-3 px-4">
+                            <i class="fas fa-fingerprint text-blue-400 text-xl"></i>
+                            <span class="text-gray-700">Autenticação do celular</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 1.1: Cadastro de Psicólogo -->
+            <div id="register-screen" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Cadastro de Psicólogo</h2>
+                    <button onclick="showScreen('login-screen')" class="text-gray-600">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-1">Nome completo</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-1">E-mail profissional</label>
+                        <input type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-1">CRP (Registro profissional)</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 mb-1">Senha</label>
+                            <input type="password" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-1">Confirmar senha</label>
+                            <input type="password" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start mt-2">
+                        <input type="checkbox" id="terms" class="mt-1 mr-2">
+                        <label for="terms" class="text-sm text-gray-600">
+                            Concordo com os <a href="#" class="text-blue-500">Termos de Serviço</a> e <a href="#" class="text-blue-500">Política de Privacidade</a>
+                        </label>
+                    </div>
+                    
+                    <button onclick="showScreen('agenda-screen')" class="w-full bg-yellow-300 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition duration-200 mt-4">
+                        Criar Conta
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen 2: Agenda -->
+            <div id="agenda-screen" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Agenda</h2>
+                    <button onclick="showScreen('patient-screen')" class="bg-yellow-300 text-black px-4 py-2 rounded-lg">
+                        <i class="fas fa-user-plus mr-2"></i>Novo
+                    </button>
+                </div>
+                
+                <!-- Mini Calendar -->
+                <div class="bg-white p-4 rounded-lg shadow mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <button class="text-gray-600"><i class="fas fa-chevron-left"></i></button>
+                        <span class="font-semibold">Junho 2023</span>
+                        <button class="text-gray-600"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-1 text-center text-sm">
+                        <div class="py-1 text-gray-500">D</div>
+                        <div class="py-1 text-gray-500">S</div>
+                        <div class="py-1 text-gray-500">T</div>
+                        <div class="py-1 text-gray-500">Q</div>
+                        <div class="py-1 text-gray-500">Q</div>
+                        <div class="py-1 text-gray-500">S</div>
+                        <div class="py-1 text-gray-500">S</div>
+                        
+                        <div class="py-1 text-gray-400">28</div>
+                        <div class="py-1 text-gray-400">29</div>
+                        <div class="py-1 text-gray-400">30</div>
+                        <div class="py-1 text-gray-400">31</div>
+                        <div class="py-1">1</div>
+                        <div class="py-1">2</div>
+                        <div class="py-1">3</div>
+                        
+                        <div class="py-1">4</div>
+                        <div class="py-1">5</div>
+                        <div class="py-1">6</div>
+                        <div class="py-1">7</div>
+                        <div class="py-1 bg-yellow-300 rounded-full font-bold">8</div>
+                        <div class="py-1">9</div>
+                        <div class="py-1">10</div>
+                        
+                        <div class="py-1">11</div>
+                        <div class="py-1 bg-yellow-300 rounded-full font-bold">12</div>
+                        <div class="py-1">13</div>
+                        <div class="py-1">14</div>
+                        <div class="py-1">15</div>
+                        <div class="py-1">16</div>
+                        <div class="py-1">17</div>
+                        
+                        <div class="py-1">18</div>
+                        <div class="py-1">19</div>
+                        <div class="py-1 bg-yellow-300 rounded-full font-bold">20</div>
+                        <div class="py-1">21</div>
+                        <div class="py-1">22</div>
+                        <div class="py-1">23</div>
+                        <div class="py-1">24</div>
+                        
+                        <div class="py-1">25</div>
+                        <div class="py-1">26</div>
+                        <div class="py-1">27</div>
+                        <div class="py-1">28</div>
+                        <div class="py-1">29</div>
+                        <div class="py-1">30</div>
+                        <div class="py-1 text-gray-400">1</div>
+                    </div>
+                </div>
+                
+                <!-- Appointments List -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="border-b border-blue-200 p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-semibold">Hoje, 8 de Junho</h3>
+                            <p class="text-sm text-gray-500">3 consultas agendadas</p>
+                        </div>
+                        <button class="text-blue-400"><i class="fas fa-ellipsis-v"></i></button>
+                    </div>
+                    
+                    <div class="divide-y divide-blue-100">
+                        <!-- Appointment 1 -->
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold">09:00 - 10:00</p>
+                                    <p class="text-gray-700">Ana Silva</p>
+                                    <p class="text-sm text-gray-500">Transtorno de ansiedade</p>
+                                </div>
+                                <button class="text-blue-400"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment 2 -->
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold">11:00 - 12:00</p>
+                                    <p class="text-gray-700">Carlos Mendes</p>
+                                    <p class="text-sm text-gray-500">Acompanhamento</p>
+                                </div>
+                                <button class="text-blue-400"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Appointment 3 -->
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold">14:00 - 15:30</p>
+                                    <p class="text-gray-700">Mariana Oliveira</p>
+                                    <p class="text-sm text-gray-500">Primeira consulta</p>
+                                </div>
+                                <button class="text-blue-400"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bottom Navigation -->
+                <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around py-3 max-w-md mx-auto">
+                    <button onclick="showScreen('agenda-screen')" class="text-blue-400 p-2">
+                        <i class="fas fa-calendar-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('notes-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-file-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('records-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-notes-medical text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('accounting-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-dollar-sign text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen 3: Cadastro de Pacientes -->
+            <div id="patient-screen" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Novo Paciente</h2>
+                    <button onclick="showScreen('agenda-screen')" class="text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-1">Nome completo</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 mb-1">CPF</label>
+                            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-1">RG</label>
+                            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-1">Endereço</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-1">Telefone</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-1">E-mail</label>
+                        <input type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-1">Categoria</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option>Particular</option>
+                            <option>Convênio A</option>
+                            <option>Convênio B</option>
+                            <option>Convênio C</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="showScreen('agenda-screen')" class="w-full bg-yellow-300 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition duration-200 mt-6">
+                        Salvar Paciente
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen 4: Prontuário -->
+            <div id="records-screen" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Prontuário</h2>
+                    <button onclick="showScreen('agenda-screen')" class="text-gray-600">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-4 mb-4">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-blue-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">Ana Silva</h3>
+                            <p class="text-sm text-gray-500">32 anos | Feminino</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-2 text-center mb-4">
+                        <div class="bg-blue-50 p-2 rounded">
+                            <p class="text-xs text-gray-500">Consultas</p>
+                            <p class="font-semibold">12</p>
+                        </div>
+                        <div class="bg-blue-50 p-2 rounded">
+                            <p class="text-xs text-gray-500">Desde</p>
+                            <p class="font-semibold">Mar/22</p>
+                        </div>
+                        <div class="bg-blue-50 p-2 rounded">
+                            <p class="text-xs text-gray-500">Convênio</p>
+                            <p class="font-semibold">Particular</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="border-b border-blue-200 p-4">
+                        <h3 class="font-semibold">Anotações da última consulta</h3>
+                        <p class="text-sm text-gray-500">05 de Junho de 2023</p>
+                    </div>
+                    
+                    <div class="p-4">
+                        <p class="text-gray-700 mb-4">
+                            Paciente relatou melhora significativa nos sintomas de ansiedade após implementação das técnicas de respiração. 
+                            Demonstra maior consciência corporal e reconhece os gatilhos para suas crises. 
+                            Relatou apenas dois episódios de ansiedade na última quinzena, ambos com menor intensidade.
+                        </p>
+                        
+                        <div class="flex space-x-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Ansiedade</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Técnicas de respiração</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="showScreen('agenda-screen')" class="w-full bg-yellow-300 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition duration-200">
+                    Nova Anotação
+                </button>
+                
+                <!-- Bottom Navigation -->
+                <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around py-3 max-w-md mx-auto">
+                    <button onclick="showScreen('agenda-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-calendar-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('notes-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-file-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('records-screen')" class="text-blue-400 p-2">
+                        <i class="fas fa-notes-medical text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('accounting-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-dollar-sign text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen 5: Contabilidade -->
+            <div id="accounting-screen" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Contabilidade</h2>
+                    <button onclick="showScreen('agenda-screen')" class="text-gray-600">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="border-b border-blue-200 p-4 flex justify-between items-center">
+                        <h3 class="font-semibold">Junho 2023</h3>
+                        <div class="flex space-x-2">
+                            <button class="text-blue-400"><i class="fas fa-filter"></i></button>
+                            <button class="text-blue-400"><i class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="divide-y divide-blue-100">
+                        <!-- Summary -->
+                        <div class="p-4 grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p class="text-xs text-gray-500">Total</p>
+                                <p class="font-semibold">R$ 3.250</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Recebido</p>
+                                <p class="font-semibold">R$ 2.100</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Pendente</p>
+                                <p class="font-semibold">R$ 1.150</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b border-blue-200">
+                                    <th class="text-left p-3 text-sm font-semibold text-gray-700">Paciente</th>
+                                    <th class="text-left p-3 text-sm font-semibold text-gray-700">Valor</th>
+                    <th class="text-left p-3 text-sm font-semibold text-gray-700">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-blue-100">
+                                <tr>
+                                    <td class="p-3 text-sm">Ana Silva</td>
+                                    <td class="p-3 text-sm">R$ 250</td>
+                                    <td class="p-3">
+                                        <span class="bg-yellow-300 text-black text-xs px-2 py-1 rounded">Pago</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 text-sm">Carlos Mendes</td>
+                                    <td class="p-3 text-sm">R$ 300</td>
+                                    <td class="p-3">
+                                        <span class="bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded">Pendente</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 text-sm">Mariana Oliveira</td>
+                                    <td class="p-3 text-sm">R$ 200</td>
+                                    <td class="p-3">
+                                        <span class="bg-yellow-300 text-black text-xs px-2 py-1 rounded">Pago</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 text-sm">Roberto Almeida</td>
+                                    <td class="p-3 text-sm">R$ 350</td>
+                                    <td class="p-3">
+                                        <span class="bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded">Pendente</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 text-sm">Juliana Costa</td>
+                                    <td class="p-3 text-sm">R$ 250</td>
+                                    <td class="p-3">
+                                        <span class="bg-yellow-300 text-black text-xs px-2 py-1 rounded">Pago</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Bottom Navigation -->
+                <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around py-3 max-w-md mx-auto">
+                    <button onclick="showScreen('agenda-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-calendar-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('notes-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-file-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('records-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-notes-medical text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('accounting-screen')" class="text-blue-400 p-2">
+                        <i class="fas fa-dollar-sign text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Screen 6: Anotações Livres -->
+            <div id="notes-screen" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Anotações Livres</h2>
+                    <button onclick="showScreen('agenda-screen')" class="text-gray-600">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <input type="text" placeholder="Título da anotação" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <textarea class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 note-textarea" placeholder="Escreva suas anotações aqui..."></textarea>
+                </div>
+                
+                <div class="flex space-x-2 mb-6">
+                    <button class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-tag mr-1"></i> Adicionar tag
+                    </button>
+                    <button class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-paperclip mr-1"></i> Anexar
+                    </button>
+                </div>
+                
+                <button onclick="showScreen('agenda-screen')" class="w-full bg-yellow-300 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition duration-200">
+                    Salvar Anotação
+                </button>
+                
+                <!-- Bottom Navigation -->
+                <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around py-3 max-w-md mx-auto">
+                    <button onclick="showScreen('agenda-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-calendar-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('notes-screen')" class="text-blue-400 p-2">
+                        <i class="fas fa-file-alt text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('records-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-notes-medical text-xl"></i>
+                    </button>
+                    <button onclick="showScreen('accounting-screen')" class="text-gray-500 p-2">
+                        <i class="fas fa-dollar-sign text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Function to show specific screen and hide others
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('main > div').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            // Show the requested screen
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+        
+        // Initialize by showing login screen
+        document.addEventListener('DOMContentLoaded', function() {
+            showScreen('login-screen');
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=brucardosocoder/bru-cardoso-coder" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
